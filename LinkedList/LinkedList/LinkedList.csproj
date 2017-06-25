@@ -34,8 +34,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\LinkedList.cs" />
-    <Compile Include="Classes\LinkedListNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes\" />
