@@ -40,6 +40,18 @@ namespace LinkedList
 			Console.WriteLine("Cursor at {0}.", List1.GetCursor());
 			List1.GoToPrior();
 			Console.WriteLine("Cursor at {0}.", List1.GetCursor());
+            List1.Print();
+
+            List1.Remove();
+            List1.Print();
+
+            List1.GoToEnd();
+            List1.Remove();
+            List1.Print();
+
+            List1.GoToPrior();
+            List1.Remove();
+            List1.Print();
 
             Console.WriteLine("The list is empty: {0}", List1.IsEmpty());
         }

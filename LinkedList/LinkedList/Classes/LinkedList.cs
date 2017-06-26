@@ -20,17 +20,12 @@ namespace LinkedList
 			{
                 _head = new LinkedListNode<DataType>(newItem, null);
                 _cursor = _head;
-
-                return true;
 			}
-
             //if cursor is at end of list
-            if (_cursor.Next == null)
+            else if (_cursor.Next == null)
             {
                 _cursor.Next = new LinkedListNode<DataType>(newItem, null);
                 _cursor = _cursor.Next;
-
-                return true;
             }
             //if cursor is in the middle
             else
@@ -41,9 +36,10 @@ namespace LinkedList
                 _cursor.Next = new LinkedListNode<DataType>(newItem, null);
                 _cursor = _cursor.Next;
                 _cursor.Next = temp;
-
-                return true;
             }
+
+            _size++;
+            return true;
 		}
 
 		public bool Remove()
@@ -53,13 +49,17 @@ namespace LinkedList
 			{
                 return false;
 			}
-
+            //if cursor at beginning
+            else if(_cursor==_head)
+            {
+                _head = _cursor.Next;
+                _cursor = _head;
+            }
 			//if cursor is at end of list
-			if (_cursor.Next == null)
+			else if (_cursor.Next == null)
 			{
                 GoToPrior();
-                _cursor.Next = null;
-                return true;
+				_cursor.Next = null;
 			}
 			//if cursor is in the middle
 			else
@@ -67,17 +67,29 @@ namespace LinkedList
                 LinkedListNode<DataType> temp = _cursor.Next;
                 GoToPrior();
                 _cursor.Next = temp;
-				return true;
 			}
+
+            return true;
 		}
 
 		public bool Replace(DataType newItem)
 		{
-			return true;
+            if (_cursor == null)
+            {
+                return false;
+            }
+            else 
+            {
+                _cursor.Data = newItem;
+                return true;
+            }
 		}
 
 		public bool Clear()
 		{
+            //yay garbo collection
+            _head = null;
+            _cursor = null;
 			return true;
 		}
 
@@ -98,16 +110,30 @@ namespace LinkedList
 
 		public bool GoToBeginning()
 		{
+            _cursor = _head;
 			return true;
 		}
 
 		public bool GoToEnd()
 		{
+            if (_cursor == null)
+                return false;
+            
+            while(_cursor.Next != null)
+            {
+                _cursor = _cursor.Next;
+            }
+
 			return true;
 		}
 
 		public bool GoToNext()
 		{
+            if (_cursor == null || _cursor.Next == null)
+                return false;
+            else
+                _cursor = _cursor.Next;
+            
 			return true;
 		}
 
@@ -122,9 +148,11 @@ namespace LinkedList
                 }
 
                 _cursor = temp;
+
+                return true;
             }
 
-			return true;
+            return false;
 		}
 
 		public DataType GetCursor()
@@ -134,6 +162,7 @@ namespace LinkedList
 
 		public bool MoveToBeginning()
 		{
+            _cursor = _head;
 			return true;
 		}
 
