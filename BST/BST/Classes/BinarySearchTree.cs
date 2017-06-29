@@ -6,8 +6,8 @@ namespace BST
         private class BSTNode
 		{
             public int data;
-            public readonly BSTNode left;
-            public readonly BSTNode right;
+            public BSTNode left { get; set; }
+            public BSTNode right { get; set; }
 
             public BSTNode(int input, BSTNode leftChild, BSTNode rightChild)
 			{
@@ -96,14 +96,103 @@ namespace BST
 		// Remove data item
         public bool Remove( int deleteKey )
         {
-            return true;
+            return RemoveHelper(root, deleteKey);
+        }
+
+        private bool RemoveHelper(BSTNode currentNode, int deleteKey)
+        {
+            //if got to end, return false
+            if (currentNode == null)
+                return false;
+
+            //check if found
+            if (((currentNode.left).data == deleteKey) || ((currentNode.right).data == deleteKey))
+            {
+                BSTNode nodeToDelete;
+                bool leftChild;
+                if ((currentNode.left).data == deleteKey)
+                {
+                    nodeToDelete = currentNode.left;
+                    leftChild = true;
+                }
+                    
+                else
+                {
+                    nodeToDelete = currentNode.right;
+                    leftChild = false;
+                }
+                    
+
+                //if node has 0 children
+                if (nodeToDelete.left == null && nodeToDelete.right == null)
+                {
+                    if(leftChild)
+                    {
+                        currentNode.left = null;
+                    }
+                    else
+                    {
+                        currentNode.right = null;
+                    }
+
+                    return true;
+                }
+                //if node has left child
+                else if (nodeToDelete.left != null && nodeToDelete.right == null)
+                {
+                    if (leftChild)
+                        currentNode.left = nodeToDelete.left;
+                    else
+                        currentNode.right = nodeToDelete.left;
+
+                    return true;
+                }
+                //if node has right child
+                else if (nodeToDelete.left == null && nodeToDelete.right != null)
+                {
+                    if (leftChild)
+                        currentNode.left = nodeToDelete.right;
+                    else
+                        currentNode.right = nodeToDelete.right;
+
+                    return true;
+                }
+                //if node has 2 children
+                else
+                {
+                    //find the next largest node
+                    nodeToDelete = nodeToDelete.left;
+                    while (nodeToDelete.right != null)
+                        nodeToDelete = nodeToDelete.right;
+
+                    if (leftChild)
+                    {
+                        (currentNode.left).data = nodeToDelete.data;
+                        return RemoveHelper((currentNode.left).left, deleteKey);
+                    }
+                    else
+                    {
+                        (currentNode.right).data = nodeToDelete.data;
+                        return RemoveHelper((currentNode.left).left, deleteKey);
+                    }
+                }
+            }
+            else if (currentNode.data > deleteKey)
+                return RemoveHelper(currentNode.left, deleteKey);
+            else
+                return RemoveHelper(currentNode.right, deleteKey);
         }
 
         // Print everything in tree
-        public void WriteKeys()
+        public void WriteKeysDepth()
         {
             
         }    
+
+        public void WriteKeysBreadth()
+        {
+
+        }
 
 		public void Clear()
         {

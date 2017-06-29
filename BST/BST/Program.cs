@@ -6,7 +6,20 @@ namespace BST
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            BinarySearchTree myTree = new BinarySearchTree();
+
+            Random random = new Random();
+            int numToInsert;
+
+            for(int x = 0; x<15;x++)
+            {
+                numToInsert = random.Next(0, 50);
+                myTree.Insert(numToInsert);
+            }
+
+            myTree.ShowStructure();
+
+            Console.Read();
         }
     }
 }
