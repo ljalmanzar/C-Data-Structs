@@ -1,21 +1,95 @@
 ﻿using System;
 namespace BST
 {
+    public enum NodePosition
+    {
+        left,
+        right,
+        center
+    }
+
     public class BinarySearchTree
     {
-        private class BSTNode
+        protected class BSTNode
 		{
-            public int data;
-            public BSTNode left { get; set; }
-            public BSTNode right { get; set; }
-
+            public int _data;
+            public BSTNode _left;
+            public BSTNode _right;
             public BSTNode(int input, BSTNode leftChild, BSTNode rightChild)
 			{
-				data = input;
-				left = leftChild;
-				right = rightChild;
+				_data = input;
+				_left= leftChild;
+				_right = rightChild;
 			}
-		}
+
+            private void PrintValue(string value, NodePosition nodePostion)
+            {
+                switch (nodePostion)
+                {
+                    case NodePosition.left:
+                        PrintLeftValue(value);
+                        break;
+                    case NodePosition.right:
+                        PrintRightValue(value);
+                        break;
+                    case NodePosition.center:
+                        Console.WriteLine(value);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+
+            private void PrintLeftValue(string value)
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write("L:");
+                Console.ForegroundColor = (value == "-") ? ConsoleColor.Red : ConsoleColor.Gray;
+                Console.WriteLine(value);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+
+            private void PrintRightValue(string value)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("R:");
+                Console.ForegroundColor = (value == "-") ? ConsoleColor.Red : ConsoleColor.Gray;
+                Console.WriteLine(value);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+
+            public void Print(string indent, NodePosition nodePosition, bool last, bool empty)
+            {
+
+                Console.Write(indent);
+                if (last)
+                {
+                    Console.Write("└─");
+                    indent += "  ";
+                }
+                else
+                {
+                    Console.Write("├─");
+                    indent += "| ";
+                }
+
+                var stringValue = empty ? "-" : _data.ToString();
+                PrintValue(stringValue, nodePosition);
+
+                if (!empty && (this._left != null || this._right != null))
+                {
+                    if (this._left != null)
+                        this._left.Print(indent, NodePosition.left, false, false);
+                    else
+                        Print(indent, NodePosition.left, false, true);
+
+                    if (this._right != null)
+                        this._right.Print(indent, NodePosition.right, true, false);
+                    else
+                        Print(indent, NodePosition.right, true, true);
+                }
+            }
+        }
 
         private BSTNode root;
 
@@ -38,41 +112,42 @@ namespace BST
             }
             else
             {
-                if (newDataItem > root.data)
+                if (newDataItem > root._data)
                 {
-                    InsertHelper(root.right, newDataItem);
+                    InsertHelper(ref root._right, newDataItem);
                 }
                 else
                 {
-                    InsertHelper(root.left, newDataItem);
+                    InsertHelper(ref root._left, newDataItem);
                 }
                     
             }
             
         }
 
-        private void InsertHelper(BSTNode currentNode, int newDataItem)
+        private void InsertHelper(ref BSTNode currentNode, int newDataItem)
         {
             if (currentNode == null)
             {
                 currentNode = new BSTNode(newDataItem, null, null);
+                Console.WriteLine("added {0}", newDataItem);
                 return;
             }
 
-			if (newDataItem > root.data)
+			if (newDataItem > currentNode._data)
 			{
-                InsertHelper(currentNode.right, newDataItem);
+                InsertHelper(ref currentNode._right, newDataItem);
 			}
 			else
 			{
-                InsertHelper(currentNode.left, newDataItem);
+                InsertHelper(ref currentNode._left, newDataItem);
 			}
         }
 
 		// Search data item
         public bool Search(int searchDataItem )
         {
-            if (root.data == searchDataItem)
+            if (root._data == searchDataItem)
                 return true;
             else
                 return SearchHelper(root, searchDataItem); 
@@ -85,75 +160,75 @@ namespace BST
 				return false;
             
             // check to see if found, if not keep looking
-            if (currentNode.data == searchDataItem)
+            if (currentNode._data == searchDataItem)
                 return true;
-            else if (currentNode.data > searchDataItem)
-                return SearchHelper(currentNode.left, searchDataItem);
+            else if (currentNode._data > searchDataItem)
+                return SearchHelper(currentNode._left, searchDataItem);
             else
-                return SearchHelper(currentNode.right, searchDataItem);
+                return SearchHelper(currentNode._right, searchDataItem);
         }
 
 		// Remove data item
         public bool Remove( int deleteKey )
         {
-            return RemoveHelper(root, deleteKey);
+            return RemoveHelper(ref root, deleteKey);
         }
 
-        private bool RemoveHelper(BSTNode currentNode, int deleteKey)
+        private bool RemoveHelper(ref BSTNode currentNode, int deleteKey)
         {
             //if got to end, return false
             if (currentNode == null)
                 return false;
 
             //check if found
-            if (((currentNode.left).data == deleteKey) || ((currentNode.right).data == deleteKey))
+            if (((currentNode._left)._data == deleteKey) || ((currentNode._right)._data == deleteKey))
             {
                 BSTNode nodeToDelete;
                 bool leftChild;
-                if ((currentNode.left).data == deleteKey)
+                if ((currentNode._left)._data == deleteKey)
                 {
-                    nodeToDelete = currentNode.left;
+                    nodeToDelete = currentNode._left;
                     leftChild = true;
                 }
                     
                 else
                 {
-                    nodeToDelete = currentNode.right;
+                    nodeToDelete = currentNode._right;
                     leftChild = false;
                 }
                     
 
                 //if node has 0 children
-                if (nodeToDelete.left == null && nodeToDelete.right == null)
+                if (nodeToDelete._left== null && nodeToDelete._right == null)
                 {
                     if(leftChild)
                     {
-                        currentNode.left = null;
+                        currentNode._left= null;
                     }
                     else
                     {
-                        currentNode.right = null;
+                        currentNode._right = null;
                     }
 
                     return true;
                 }
-                //if node has left child
-                else if (nodeToDelete.left != null && nodeToDelete.right == null)
+                //if node has _leftchild
+                else if (nodeToDelete._left!= null && nodeToDelete._right == null)
                 {
                     if (leftChild)
-                        currentNode.left = nodeToDelete.left;
+                        currentNode._left= nodeToDelete._left;
                     else
-                        currentNode.right = nodeToDelete.left;
+                        currentNode._right = nodeToDelete._left;
 
                     return true;
                 }
                 //if node has right child
-                else if (nodeToDelete.left == null && nodeToDelete.right != null)
+                else if (nodeToDelete._left== null && nodeToDelete._right != null)
                 {
                     if (leftChild)
-                        currentNode.left = nodeToDelete.right;
+                        currentNode._left= nodeToDelete._right;
                     else
-                        currentNode.right = nodeToDelete.right;
+                        currentNode._right = nodeToDelete._right;
 
                     return true;
                 }
@@ -161,26 +236,26 @@ namespace BST
                 else
                 {
                     //find the next largest node
-                    nodeToDelete = nodeToDelete.left;
-                    while (nodeToDelete.right != null)
-                        nodeToDelete = nodeToDelete.right;
+                    nodeToDelete = nodeToDelete._left;
+                    while (nodeToDelete._right != null)
+                        nodeToDelete = nodeToDelete._right;
 
                     if (leftChild)
                     {
-                        (currentNode.left).data = nodeToDelete.data;
-                        return RemoveHelper((currentNode.left).left, deleteKey);
+                        (currentNode._left)._data = nodeToDelete._data;
+                        return RemoveHelper(ref (currentNode._left)._left, deleteKey);
                     }
                     else
                     {
-                        (currentNode.right).data = nodeToDelete.data;
-                        return RemoveHelper((currentNode.left).left, deleteKey);
+                        (currentNode._right)._data = nodeToDelete._data;
+                        return RemoveHelper(ref (currentNode._left)._left, deleteKey);
                     }
                 }
             }
-            else if (currentNode.data > deleteKey)
-                return RemoveHelper(currentNode.left, deleteKey);
+            else if (currentNode._data > deleteKey)
+                return RemoveHelper(ref currentNode._left, deleteKey);
             else
-                return RemoveHelper(currentNode.right, deleteKey);
+                return RemoveHelper(ref currentNode._right, deleteKey);
         }
 
         // Print everything in tree
@@ -207,7 +282,7 @@ namespace BST
 		// Output the tree structure -- used in testing/debugging
 		public void ShowStructure()
         {
-            
+            root.Print("", NodePosition.center, true, false);
         }
 
         // height of tree)
